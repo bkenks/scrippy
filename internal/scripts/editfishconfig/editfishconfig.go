@@ -5,6 +5,8 @@
 package efc
 
 import (
+	"log"
+	"os"
 	"os/exec"
 
 	"github.com/bkenks/scrippy/internal/events"
@@ -40,7 +42,13 @@ func (e *EFC) Exec() tea.Cmd {
 		editor = "nvim" // default to nvim if something goes wrong
 	}
 
-	cmdBuilder := exec.Command(editor, "/home/brian-kenkel/.config/fish/config.fish")
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cmdBuilder := exec.Command(editor, ".config/fish/config.fish")
+	cmdBuilder.Dir = home
 
 	cmd := tea.ExecProcess(cmdBuilder, execCallback)
 
